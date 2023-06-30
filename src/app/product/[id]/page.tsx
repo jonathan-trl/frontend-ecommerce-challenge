@@ -2,7 +2,9 @@
 import ButtonBack from '@/components/ButtonBack'
 import Container from '@/components/Container'
 import IconWhiteCart from '@/components/Icons/IconWhiteCart'
+import useLocalStorage from '@/hooks/useLocalStorage'
 import useProduct from '@/hooks/useProduct'
+import { CartProduct } from '@/types/CartProduct'
 import formatPriceInCentsToCurrency from '@/utils/formatPriceInCentsToCurrency'
 import {
   Box,
@@ -12,16 +14,22 @@ import {
   SimpleGrid,
   Stack,
   Text,
+  useToast,
 } from '@chakra-ui/react'
 
 const Product = ({ params }: { params: { id: string } }) => {
+  const toast = useToast()
+  const { value, updateLocalStorage } = useLocalStorage<CartProduct[]>(
+    'cart-items',
+    []
+  )
   const { data } = useProduct(params.id)
 
   const handleAddToCart = () => {
-    let cartItems = localStorage.getItem('cart-items')
+    let cartItems = value
 
     if (cartItems) {
-      let cartItemsArray = JSON.parse(cartItems)
+      let cartItemsArray = [...cartItems]
 
       let existingProduct = cartItemsArray.findIndex(
         (item: { id: string }) => item.id === params.id
@@ -30,19 +38,27 @@ const Product = ({ params }: { params: { id: string } }) => {
       if (existingProduct != -1) {
         cartItemsArray[existingProduct].quantity += 1
       } else {
-        cartItemsArray.push({ ...data, quantity: 1 })
+        cartItemsArray.push({ ...data!, quantity: 1 })
       }
 
-      localStorage.setItem('cart-items', JSON.stringify(cartItemsArray))
+      updateLocalStorage(cartItemsArray)
     } else {
       const newCart = [
         {
-          ...data,
+          ...data!,
           quantity: 1,
         },
       ]
-      localStorage.setItem('cart-items', JSON.stringify(newCart))
+      updateLocalStorage(newCart)
     }
+
+    toast({
+      position: 'top',
+      title: 'Produto adicionado no carrinho!',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+    })
   }
   return (
     <Container>

@@ -1,8 +1,7 @@
 'use client'
 
+import useCountCartLength from '@/stores/useCountCartLength'
 import useFilter from '@/stores/useFilter'
-import useLocalStorage from '@/stores/useLocalStorage'
-import { CartProduct } from '@/types/CartProduct'
 import {
   Box,
   Flex,
@@ -13,16 +12,16 @@ import {
   Link,
   Text,
 } from '@chakra-ui/react'
+import { usePathname } from 'next/navigation'
 import { ChangeEvent } from 'react'
 import CartIcon from './CartIcon'
 import CartQuantityItems from './CartQuantityItems'
 import SearchIcon from './SearchIcon'
 
 const Navbar = () => {
-  const useCartStore = useLocalStorage<CartProduct[]>('cart-items', [])
-
-  const { value } = useCartStore()
+  const pathName = usePathname()
   const { search, setSearch } = useFilter()
+  const { cartLength } = useCountCartLength()
 
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value
@@ -32,7 +31,7 @@ const Navbar = () => {
   return (
     <Flex
       bgColor={'#fff'}
-      justifyContent={'space-between'}
+      justifyContent={{ base: 'center', md: 'space-between' }}
       flexWrap={'wrap'}
       p={{ base: '35px 20px ', lg: '35px 160px' }}
       alignItems={'center'}
@@ -49,28 +48,37 @@ const Navbar = () => {
         </Heading>
       </Box>
       <Flex alignItems={'center'}>
-        <InputGroup bgColor={'#F3F5F6'} minW={'350px'} borderRadius={'8px'}>
-          <Input
-            value={search}
-            onChange={handleSearchChange}
-            placeholder="Procurando por algo?"
-            border={0}
-          />
+        {pathName === '/' && (
+          <InputGroup
+            bgColor={'#F3F5F6'}
+            minW={{ base: '250px', md: '350px' }}
+            borderRadius={'8px'}
+          >
+            <Input
+              value={search}
+              onChange={handleSearchChange}
+              placeholder="Procurando por algo?"
+              border={0}
+            />
 
-          <InputRightElement pointerEvents="none" mr={'10px'}>
-            <SearchIcon />
-          </InputRightElement>
-        </InputGroup>
+            <InputRightElement pointerEvents="none" mr={'10px'}>
+              <SearchIcon />
+            </InputRightElement>
+          </InputGroup>
+        )}
+
         <Box ml={'20px'}>
           <Link href="/cart" pos={'relative'}>
             <CartIcon />
-            <Box pos={'absolute'} bottom={'-10px'} right={'-10px'}>
-              <CartQuantityItems>
-                <Text color="#fff" fontSize={'12px'}>
-                  {value.length}
-                </Text>
-              </CartQuantityItems>
-            </Box>
+            {cartLength > 0 && (
+              <Box pos={'absolute'} bottom={'-10px'} right={'-10px'}>
+                <CartQuantityItems>
+                  <Text color="#fff" fontSize={'12px'}>
+                    {cartLength}
+                  </Text>
+                </CartQuantityItems>
+              </Box>
+            )}
           </Link>
         </Box>
       </Flex>

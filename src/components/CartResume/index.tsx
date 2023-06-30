@@ -12,7 +12,13 @@ const CartResume = ({
   cartTotalWithDelivery,
 }: CartResumeProps) => {
   return (
-    <Flex flexDir={'column'} w={'100%'} minH={'70vh'} bgColor={'#FFF'} p="24px">
+    <Flex
+      flexDir={'column'}
+      w={'100%'}
+      minH={{ base: 'auto', xl: '70vh' }}
+      bgColor={'#FFF'}
+      p="24px"
+    >
       <Text fontSize={'20px'} fontWeight={'600'}>
         RESUMO DO PEDIDO
       </Text>
@@ -36,7 +42,7 @@ const CartResume = ({
       <Box flexGrow={'1'}>
         <Button
           w={'100%'}
-          bgColor={'green'}
+          bgColor={'#51B853'}
           color={'#fff'}
           borderRadius={'4px'}
           colorScheme="green"
@@ -46,7 +52,12 @@ const CartResume = ({
           FINALIZAR COMPRA
         </Button>
       </Box>
-      <Stack color={'#737380'} textDecor={'underline'} fontSize={'14px'}>
+      <Stack
+        color={'#737380'}
+        textDecor={'underline'}
+        fontSize={'14px'}
+        mt={{ base: '30px', xl: '0' }}
+      >
         <Link>AJUDA</Link>
         <Link>REEMBOLSOS</Link>
         <Link>ENTREGAS E FRETES</Link>

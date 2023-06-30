@@ -3,16 +3,17 @@ import ButtonBack from '@/components/ButtonBack'
 import CartItem from '@/components/CartItem'
 import CartResume from '@/components/CartResume'
 import Container from '@/components/Container'
-import useLocalStorage from '@/stores/useLocalStorage'
+import useLocalStorage from '@/hooks/useLocalStorage'
 import { CartProduct } from '@/types/CartProduct'
 import formatPriceInCentsToCurrency from '@/utils/formatPriceInCentsToCurrency'
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { Box, Flex, Text, useToast } from '@chakra-ui/react'
 
 const Cart = () => {
-  const useCartStore = useLocalStorage<CartProduct[]>('cart-items', [])
-
-  const { value, updateLocalStorage } = useCartStore()
-
+  const toast = useToast()
+  const { value, updateLocalStorage } = useLocalStorage<CartProduct[]>(
+    'cart-items',
+    []
+  )
   const calculateTotal = (value: CartProduct[]) => {
     return value.reduce(
       (sum, item) => (sum += item.price_in_cents * item.quantity),
@@ -41,6 +42,13 @@ const Cart = () => {
         if (item.id !== id) return item
       })
       updateLocalStorage(newValue)
+      toast({
+        position: 'top',
+        title: 'Produto removido no carrinho!',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      })
     }
   }
   return (
@@ -62,6 +70,9 @@ const Cart = () => {
               {cartTotal}
             </Text>
           </Text>
+          {value.length <= 0 && (
+            <Text>Você ainda não tem nenhum produto no carrinho!</Text>
+          )}
           <Flex flexDir={'column'} gap={'15px'}>
             {value.map((product) => (
               <CartItem
@@ -73,13 +84,15 @@ const Cart = () => {
             ))}
           </Flex>
         </Box>
-        <Flex w={{ base: '100%', xl: '400px' }}>
-          <CartResume
-            cartTotal={cartTotal}
-            deliveryPrice={formatPriceInCentsToCurrency(deliveryPrice)}
-            cartTotalWithDelivery={cartTotalWithDelivery}
-          />
-        </Flex>
+        {value.length > 0 && (
+          <Flex w={{ base: '100%', xl: '400px' }}>
+            <CartResume
+              cartTotal={cartTotal}
+              deliveryPrice={formatPriceInCentsToCurrency(deliveryPrice)}
+              cartTotalWithDelivery={cartTotalWithDelivery}
+            />
+          </Flex>
+        )}
       </Flex>
     </Container>
   )

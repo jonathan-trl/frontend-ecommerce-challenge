@@ -14,7 +14,6 @@ const sairaStencil = Saira_Stencil_One({
 const colors = {
   title: '#5D5D6D',
   dark: '#09090A',
-  green: '#51B853',
 }
 
 const theme = extendTheme({

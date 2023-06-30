@@ -11,15 +11,7 @@ interface CartItemProps {
 }
 
 const CartItem = ({
-  product: {
-    id,
-    category,
-    description,
-    image_url,
-    name,
-    price_in_cents,
-    quantity,
-  },
+  product: { id, description, image_url, name, price_in_cents, quantity },
   handleUpdateQuantity,
   handleDeleteItem,
 }: CartItemProps) => {
@@ -38,12 +30,15 @@ const CartItem = ({
           height={'100%'}
           maxW={'200px'}
           maxH={'200px'}
+          w={{ base: '70px', md: 'auto' }}
+          h={{ base: '70px', md: 'auto' }}
         />
       </Box>
       <Flex
         flexDir={'column'}
         justifyContent={'space-between'}
         p={'15px 20px 20px 30px'}
+        w={'100%'}
       >
         <Flex justifyContent={'space-between'}>
           <Link href={`/product/${id}`}>
