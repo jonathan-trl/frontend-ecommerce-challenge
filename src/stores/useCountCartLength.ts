@@ -5,8 +5,12 @@ type CountCartLengthProps = {
   setCartLength: (cartLength: number) => void
 }
 
-const cartItems = localStorage.getItem('cart-items')
-const initialCartLength = cartItems ? JSON.parse(cartItems).length : 0
+let initialCartLength = 0
+
+if (typeof window !== 'undefined') {
+  const cartItems = localStorage.getItem('cart-items')
+  initialCartLength = cartItems ? JSON.parse(cartItems).length : 0
+}
 
 const useCountCartLength = create<CountCartLengthProps>((set) => ({
   cartLength: initialCartLength,
