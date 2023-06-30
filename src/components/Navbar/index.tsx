@@ -44,7 +44,7 @@ const Navbar = () => {
           as="a"
           href="/"
         >
-          capputeeno
+          e-commerce
         </Heading>
       </Box>
       <Flex alignItems={'center'}>
